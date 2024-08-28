@@ -1,6 +1,6 @@
 import { Button, Card, Col, Row, Spin, Typography, message } from 'antd';
 import React, { useState } from 'react';
-import { generatePuzzle, getSolutionOfPuzzle } from '../utils/GameUtils';
+import {generatePuzzle, getSolutionOfPuzzle, packDigits} from '../utils/GameUtils';
 import KeyboardView from './KeyboardView';
 import ProofView from './ProofView';
 import PuzzleView from './PuzzleView';
@@ -56,17 +56,19 @@ const PlayPannel: React.FC = () => {
   };
 
   const onGenerateProof = async () => {
+    const packedPuzzle = packDigits(puzzle);
+
     const input = {
-      puzzle: puzzle,
+      packedPuzzle: packedPuzzle,
       solution: solution,
     };
 
     setProofCalculating(true);
 
     const { proof, publicSignals } = await snarkjs.groth16.fullProve(
-      input,
-      'sudoku.wasm',
-      'sudoku_1.zkey'
+        input,
+        'sudoku.wasm',
+        'sudoku_1.zkey'
     );
 
     setProofCalculating(false);

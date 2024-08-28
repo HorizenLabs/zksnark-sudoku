@@ -1,0 +1,58 @@
+.connectButton {
+    background-color: #FFFFFF;
+    color: #050506;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.connectButton:hover {
+    background-color: #7A7A7B!important;
+    color: #FFFFFF!important;
+}
+
+.connectedButton {
+    background-color: #26DB8D;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.connectedButton:hover {
+    background-color: #d32f2f!important;
+    color: #FFFFFF!important;
+}
+
+.modal {
+    background: white;
+    border-radius: 10px;
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    position: relative;
+}
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+}
+
+.walletItem {
+    padding: 10px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.walletItem:hover {
+    background-color: #f0f0f0;
+}

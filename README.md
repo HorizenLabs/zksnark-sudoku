@@ -18,6 +18,7 @@ https://zksnark-sudoku.surge.sh/
 
 > snarkjs: zksnark library.
 
+
 ### 📝 Description
 
 ## 📺 Application
