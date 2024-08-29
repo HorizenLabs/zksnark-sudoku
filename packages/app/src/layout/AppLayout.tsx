@@ -1,9 +1,5 @@
 import { purple } from '@ant-design/colors';
-import {
-  GithubOutlined,
-  GoogleOutlined,
-  LinkedinOutlined,
-} from '@ant-design/icons';
+import dynamic from 'next/dynamic';
 import { Col, Layout, Row } from 'antd';
 import { Content, Footer, Header } from 'antd/lib/layout/layout';
 import Image from 'next/image';
@@ -16,6 +12,11 @@ import {
   LINKEDIN,
 } from '../Constants';
 import logo from '../images/sudoku.png';
+
+const GithubOutlined = dynamic(() => import('@ant-design/icons').then(mod => mod.GithubOutlined), { ssr: false });
+const GoogleOutlined = dynamic(() => import('@ant-design/icons').then(mod => mod.GoogleOutlined), { ssr: false });
+const LinkedinOutlined = dynamic(() => import('@ant-design/icons').then(mod => mod.LinkedinOutlined), { ssr: false });
+
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   return (

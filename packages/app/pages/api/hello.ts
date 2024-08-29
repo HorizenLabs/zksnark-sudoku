@@ -5,6 +5,8 @@ type Data = {
   name: string
 }
 
+export const runtime = "experimental-edge";
+
 export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
