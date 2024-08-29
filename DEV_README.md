@@ -35,7 +35,7 @@ npm install --legacy-peer-deps
 ```shell
 npm cache clean --force
 rm -rf node_modules package-lock.json
-npm install --legacy-peer-deps
+npm install --legacy-peer-deps 
 ```
 
 ## Migrating to zkVerify

@@ -61,8 +61,22 @@ export default function VerifyPannel() {
     }
   };
 
+  const downloadTransactionInfo = (transactionInfo) => {
+    const blob = new Blob([JSON.stringify(transactionInfo, null, 2)], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `zkverify-${transactionInfo.attestationId}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const handleVerifyClick = async () => {
-    await onVerifyProof(proof, puzzle);
+    const transactionInfo = await onVerifyProof(proof, puzzle);
+    if (transactionInfo) {
+      message.success(`Verified Successfully on zkVerify - AttestationId: ${transactionInfo.attestationId}`);
+      downloadTransactionInfo(transactionInfo);
+    }
   };
 
   return (

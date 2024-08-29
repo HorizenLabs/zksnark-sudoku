@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { packDigits } from '../utils/GameUtils';
 
 export function useZkVerify(selectedAccount) {
-    console.log("Selected Account in useZkVerify:", selectedAccount); // Add this log
-
     const [verifying, setVerifying] = useState(false);
     const [verified, setVerified] = useState(false);
     const [error, setError] = useState(null);
@@ -33,7 +31,6 @@ export function useZkVerify(selectedAccount) {
 
             let zkVerifySession;
             try {
-                // Dynamically import the zkVerifySession module
                 zkVerifySession = (await import('zkverifyjs')).zkVerifySession;
             } catch (error) {
                 throw new Error(`Failed to load zkVerifySession: ${error.message}`);
@@ -45,8 +42,6 @@ export function useZkVerify(selectedAccount) {
             } catch (error) {
                 throw new Error(`Connection failed: ${error.message}`);
             }
-
-            console.log("Connection Succeeded.");
 
             const { events, transactionResult } = await session.verify()
                 .groth16()
