@@ -1,12 +1,14 @@
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
 import { Button, message } from 'antd';
+import { useAccount } from '../../pages/context/AccountContext'; // Import the useAccount hook
 
 const WalletSelect = dynamic(() => import('@talismn/connect-components').then((mod) => mod.WalletSelect), {
     ssr: false, // This ensures the component is only loaded on the client side
 });
 
-const ConnectWalletButton: React.FC<{ setSelectedAccount: (account: string | null) => void, selectedAccount: string | null }> = ({ setSelectedAccount, selectedAccount }) => {
+const ConnectWalletButton: React.FC = () => {
+    const { selectedAccount, setSelectedAccount } = useAccount(); // Use the context instead of props
     const [isWalletSelectOpen, setIsWalletSelectOpen] = useState<boolean>(false);
 
     const handleWalletConnectOpen = () => {

@@ -22,6 +22,22 @@ terser packages/app/node_modules/snarkjs/build/snarkjs.js -o packages/app/public
 
 Force refresh the browser after deploying new version, especially if changing zkverify tgz file.
 
+## Install
+
+1. The legacy peer deps is required on install:
+
+```shell
+npm install --legacy-peer-deps
+```
+
+2. Development using a locally built zkverifyjs tgz file (placed in `packages/zkverifyjs`) might require removing and reinstalling dependencies
+
+```shell
+npm cache clean --force
+rm -rf node_modules package-lock.json
+npm install --legacy-peer-deps
+```
+
 ## Migrating to zkVerify
 
 1. Make sure snarkjs version is the latest

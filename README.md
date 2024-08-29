@@ -1,8 +1,8 @@
 ![🏆](https://github.com/web3-master/zksnark-sudoku/blob/master/screen-capture.gif?raw=true)
 
-# 🏆🏆🏆 zkSNARK Sudoku 🏆🏆🏆
+# 🏆🏆🏆 zkSNARK Sudoku x zkVerify 🏆🏆🏆
 
-Sudoku verifier using zkSNARK.
+Sudoku verifier using zkSNARK and zkVerify for proof verification.
 
 ## 📺 LIVE ON
 
@@ -17,6 +17,8 @@ https://zksnark-sudoku.surge.sh/
 > Circom: zksnark circuit compilation toolkit.
 
 > snarkjs: zksnark library.
+
+> zkVerifyJS: Proof verification on zkVerify 
 
 
 ### 📝 Description
