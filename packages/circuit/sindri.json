@@ -1,0 +1,9 @@
+{
+  "$schema": "https://sindri.app/api/v1/sindri-manifest-schema.json",
+  "name": "zksnarks-sudoku-zkverify",
+  "circuitPath": "./circuits/sudoku.circom",
+  "circuitType": "circom",
+  "curve": "bn254",
+  "provingScheme": "groth16",
+  "witnessCompiler": "c++"
+}

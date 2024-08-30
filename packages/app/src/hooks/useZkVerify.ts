@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { packDigits } from '../utils/GameUtils';
+import {packDigits} from "../utils/GameUtils";
 
 export function useZkVerify(selectedAccount) {
     const [verifying, setVerifying] = useState(false);
     const [verified, setVerified] = useState(false);
     const [error, setError] = useState(null);
 
-    const onVerifyProof = async (proof, puzzle) => {
+    const onVerifyProof = async (proof, puzzle, vk) => {
         setVerifying(true);
         setVerified(false);
         setError(null);
@@ -16,15 +16,14 @@ export function useZkVerify(selectedAccount) {
                 throw new Error('This operation can only be performed in the browser.');
             }
 
-            if (!proof || !puzzle) {
-                throw new Error('Proof or puzzle data is missing');
+            if (!proof || !puzzle || !vk) {
+                throw new Error('Proof, puzzle data, or verification key is missing');
             }
 
             if (!selectedAccount) {
                 throw new Error('No account connected');
             }
 
-            const vkey = await fetch('sudoku_verify_key.json').then(res => res.json());
             const packedPuzzle = packDigits(puzzle);
             const publicSignals = ['1', ...packedPuzzle.map(p => p.toString())];
             const proofData = JSON.parse(proof);
@@ -45,7 +44,7 @@ export function useZkVerify(selectedAccount) {
 
             const { events, transactionResult } = await session.verify()
                 .groth16()
-                .execute(proofData, publicSignals, vkey);
+                .execute(proofData, publicSignals, vk);
 
             events.on('ErrorEvent', (eventData) => {
                 console.error(JSON.stringify(eventData));
@@ -64,8 +63,8 @@ export function useZkVerify(selectedAccount) {
             } else {
                 throw new Error("Your proof isn't correct.");
             }
-        } catch (err) {
-            setError(err.message);
+        } catch (error) {
+            setError(error.message);
         } finally {
             setVerifying(false);
         }

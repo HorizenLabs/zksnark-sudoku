@@ -44,3 +44,35 @@ npm install --legacy-peer-deps
 2. Use the Rust version of Circom v2 + `circom --version` and not a js package implementation.
 3. Import zkverifyjs latest version.
 4. Can often require `rm -rf node_modules package-lock.json` & `npm cache clean --force` before doing an npm install or manually add from a tgz with `npm install ./packages/zkverifyjs/zkverifyjs-1.0.0.tgz`
+
+## Sindri
+
+1. Sign up on the Sindri.app website and then register your client
+
+```shell
+npx sindri login
+```
+
+2. Add `SINDRI_API_KEY` to .env file with your API KEY.
+
+### Additional Info
+
+Sindri.json example:
+
+```json
+{
+  "$schema": "https://sindri.app/api/v1/sindri-manifest-schema.json",
+  "name": "zksnarks-sudoku-zkverify",
+  "circuitPath": "./circuits/sudoku.circom",
+  "circuitType": "circom",
+  "curve": "bn254",
+  "provingScheme": "groth16",
+  "witnessCompiler": "c++"
+}
+```
+
+Test existing circuit/circuits input.json against deployed sudoku circuit.  Run from circuit directory:
+
+```shell
+ npx sindri@latest proof create --input input.json
+```

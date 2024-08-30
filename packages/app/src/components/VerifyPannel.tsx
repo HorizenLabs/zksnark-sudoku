@@ -13,6 +13,8 @@ export default function VerifyPannel() {
   const proofFile = useRef(null);
   const { verifying, verified, error, onVerifyProof } = useZkVerify(selectedAccount);
 
+  const useSindriFlag = process.env.NEXT_PUBLIC_USE_SINDRI === 'true';
+
   useEffect(() => {
     if (error) {
       message.error(error);
@@ -72,7 +74,18 @@ export default function VerifyPannel() {
   };
 
   const handleVerifyClick = async () => {
-    const transactionInfo = await onVerifyProof(proof, puzzle);
+    let vkey;
+    let proofData = proof;
+
+    if (useSindriFlag && proof) {
+      const parsedProof = JSON.parse(proof);
+      proofData = JSON.stringify(parsedProof.proof);
+      vkey = parsedProof.verification_key;
+    } else {
+      vkey = await fetch('sudoku_verify_key.json').then(res => res.json());
+    }
+
+    const transactionInfo = await onVerifyProof(proofData, puzzle, vkey);
     if (transactionInfo) {
       message.success(`Verified Successfully on zkVerify - AttestationId: ${transactionInfo.attestationId}`);
       downloadTransactionInfo(transactionInfo);
