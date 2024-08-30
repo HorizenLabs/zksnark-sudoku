@@ -6,7 +6,7 @@ import PlayPannel from "../src/components/PlayPannel";
 import VerifyPannel from "../src/components/VerifyPannel";
 import { APP_DESCRIPTION, APP_NAME } from "../src/Constants";
 import AppLayout from "../src/layout/AppLayout";
-import {AccountProvider} from "./context/AccountContext";
+import {AccountProvider} from "../context/AccountContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
