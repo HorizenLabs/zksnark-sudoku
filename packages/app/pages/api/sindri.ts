@@ -1,11 +1,12 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest } from 'next';
 
 export const runtime = 'edge';
 
 export default async function handler(req: NextApiRequest) {
-  const { packedPuzzle, solution } = req.body;
+  console.info('Received Request:', JSON.stringify(req, null, 2));
+  console.info('Received Request Body:', JSON.stringify(req.body, null, 2));
 
-  console.info('Received Request:', { packedPuzzle, solution });
+  const { packedPuzzle, solution } = req.body;
 
   if (!packedPuzzle || !solution) {
     return new Response(
