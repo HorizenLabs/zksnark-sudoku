@@ -24,23 +24,26 @@ export default async function handler(
 
     console.info('Serialized Proof Input:', proofInput);
 
-    // const sindriClient = sindri.create(
-    //   { apiKey: process.env.SINDRI_API_KEY },
-    //   undefined
-    // );
-    console.info('Sindri client created');
-
     const circuitIdentifier = 'zksnarks-sudoku-zkverify:latest';
-    // const proofResult = await sindriClient.proveCircuit(
-    //   circuitIdentifier,
-    //   proofInput
-    // );
+    const sindriApiUrl = `https://sindri.app/api/v1/circuit/${circuitIdentifier}/prove`;
 
-    // console.log(JSON.stringify(proofResult, null, 2));
-    const proofResult = {
-      proof: 'proof',
-      publicSignals: 'publicSignals',
-    };
+    console.log('Sending request to Sindri API...');
+    const response = await fetch(sindriApiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.SINDRI_API_KEY}`,
+      },
+      body: proofInput,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Sindri API responded with status ${response.status}`);
+    }
+
+    const proofResult = await response.json();
+
+    console.log('Proof result:', JSON.stringify(proofResult, null, 2));
 
     if (proofResult) {
       console.info('Proof successfully generated');
