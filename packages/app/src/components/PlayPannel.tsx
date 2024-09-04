@@ -5,7 +5,6 @@ import KeyboardView from './KeyboardView';
 import ProofView from './ProofView';
 import PuzzleView from './PuzzleView';
 import { useSindri } from '../hooks/useSindri';
-import * as snarkjs from 'snarkjs';
 
 const PlayPannel: React.FC = () => {
   const [puzzle, setPuzzle] = useState<number[]>(Array(81).fill(0));
@@ -96,6 +95,7 @@ const PlayPannel: React.FC = () => {
           solution: solution,
         };
 
+        // @ts-expect-error Global snarkjs usage
         const { proof, publicSignals } = await snarkjs.groth16.fullProve(
           input,
           'sudoku.wasm',

@@ -32,6 +32,7 @@ yarn-error.log*
 .idea
 
 # wrangler
+.wrangler
 packages/app/.wrangler
 
 # vscode
