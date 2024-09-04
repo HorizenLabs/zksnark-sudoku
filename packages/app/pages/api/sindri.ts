@@ -1,19 +1,20 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-export const runtime = 'experimental-edge';
+export const runtime = 'edge';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest) {
   const { packedPuzzle, solution } = req.body;
 
   console.info('Received Request:', { packedPuzzle, solution });
 
   if (!packedPuzzle || !solution) {
-    return res
-      .status(400)
-      .json({ error: 'Packed puzzle and solution are required' });
+    return new Response(
+      JSON.stringify({ error: 'Packed puzzle and solution are required' }),
+      {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   }
 
   try {
@@ -37,7 +38,7 @@ export default async function handler(
       body: proofInput,
     });
 
-    if (response.status !== 200) {
+    if (!response.ok) {
       throw new Error(`Sindri API responded with status ${response.status}`);
     }
 
@@ -47,10 +48,19 @@ export default async function handler(
 
     if (proofResult) {
       console.info('Proof successfully generated');
-      return res.status(200).json({ proof: JSON.stringify(proofResult) });
+      return new Response(JSON.stringify({ proof: proofResult }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
     } else {
       console.error('Failed to generate proof');
-      return res.status(500).json({ error: 'Failed to generate proof' });
+      return new Response(
+        JSON.stringify({ error: 'Failed to generate proof' }),
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
   } catch (error) {
     console.error('Error during proof generation:', error);
@@ -58,10 +68,12 @@ export default async function handler(
       'Error stack:',
       error instanceof Error ? error.stack : 'No stack available'
     );
-    return res.status(500).json({
-      error:
-        error instanceof Error ? error.message : 'An unknown error occurred',
-      stack: error instanceof Error ? error.stack : 'No stack available',
-    });
+    return new Response(
+      JSON.stringify({
+        error:
+          error instanceof Error ? error.message : 'An unknown error occurred',
+      }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
   }
 }
