@@ -37,7 +37,7 @@ export default async function handler(
       body: proofInput,
     });
 
-    if (!response.ok) {
+    if (response.status !== 200) {
       throw new Error(`Sindri API responded with status ${response.status}`);
     }
 
