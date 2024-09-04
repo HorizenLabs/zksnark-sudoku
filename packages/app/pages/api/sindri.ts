@@ -1,8 +1,12 @@
 export const runtime = 'edge';
 
 export default async function handler(req: any) {
-  console.info('Received Request:', JSON.stringify(req, null, 2));
-  console.info('Received Request Body:', JSON.stringify(req.body, null, 2));
+  // Log the full request object for better inspection
+  console.info('Received Full Request:', JSON.stringify(req, null, 2));
+
+  // Manually read the request body as a stream and convert it to text
+  let bodyText = await req.text(); // Read the request body as text
+  console.info('Received Request Body (Text):', bodyText);
 
   const { packedPuzzle, solution } = req.body;
 
