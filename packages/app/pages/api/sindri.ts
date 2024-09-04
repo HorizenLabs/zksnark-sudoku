@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { SindriClient } from 'sindri';
+import sindri from 'sindri';
 
 export const runtime = "experimental-edge";
 
@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         console.info("Serialized Proof Input:", proofInput);
 
-        const sindriClient = new SindriClient({ apiKey: process.env.SINDRI_API_KEY });
+        const sindriClient = sindri.create({ apiKey: process.env.SINDRI_API_KEY }, undefined);
         console.info("Sindri client created");
 
         const circuitIdentifier = 'zksnarks-sudoku-zkverify:latest';
