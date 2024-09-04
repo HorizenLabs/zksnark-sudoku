@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { SindriClient } from 'sindri';
 
+export const runtime = "experimental-edge";
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { packedPuzzle, solution } = req.body;
 
