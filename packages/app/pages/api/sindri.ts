@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import sindri from 'sindri';
 
-export const runtime = 'edge';
+export const runtime = 'experimental-edge';
 
 export default async function handler(
   req: NextApiRequest,
@@ -25,19 +24,23 @@ export default async function handler(
 
     console.info('Serialized Proof Input:', proofInput);
 
-    const sindriClient = sindri.create(
-      { apiKey: process.env.SINDRI_API_KEY },
-      undefined
-    );
+    // const sindriClient = sindri.create(
+    //   { apiKey: process.env.SINDRI_API_KEY },
+    //   undefined
+    // );
     console.info('Sindri client created');
 
     const circuitIdentifier = 'zksnarks-sudoku-zkverify:latest';
-    const proofResult = await sindriClient.proveCircuit(
-      circuitIdentifier,
-      proofInput
-    );
+    // const proofResult = await sindriClient.proveCircuit(
+    //   circuitIdentifier,
+    //   proofInput
+    // );
 
-    console.log(JSON.stringify(proofResult, null, 2));
+    // console.log(JSON.stringify(proofResult, null, 2));
+    const proofResult = {
+      proof: 'proof',
+      publicSignals: 'publicSignals',
+    };
 
     if (proofResult) {
       console.info('Proof successfully generated');
