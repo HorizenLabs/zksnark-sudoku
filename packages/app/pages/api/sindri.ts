@@ -1,14 +1,10 @@
 export const runtime = 'edge';
 
 export default async function handler(req: any) {
-  // Log the full request object for better inspection
-  console.info('Received Full Request:', JSON.stringify(req, null, 2));
-
-  // Manually read the request body as a stream and convert it to text
   let bodyText = await req.text(); // Read the request body as text
   console.info('Received Request Body (Text):', bodyText);
 
-  const { packedPuzzle, solution } = req.body;
+  const { packedPuzzle, solution } = JSON.parse(bodyText);
 
   if (!packedPuzzle || !solution) {
     return new Response(
