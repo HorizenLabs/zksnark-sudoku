@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { purple } from '@ant-design/colors';
 import { GithubOutlined } from '@ant-design/icons';
 import { Col, Layout, Row } from 'antd';
@@ -13,8 +12,6 @@ import logo from '../images/sudoku.png';
 import ConnectWalletButton from '../components/ConnectWalletButton';
 
 export default function AppLayout({ children }: { children: ReactNode }) {
-    const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
-
     return (
         <Layout style={{ minHeight: '100vh' }}>
             <Header
@@ -47,8 +44,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                                         marginRight: '10px',
                                     }}
                                 >
-                  X
-                </span>
+                                    X
+                                </span>
                                 <a
                                     href="https://zkverify.io"
                                     target="_blank"
@@ -75,17 +72,14 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                                 </a>
                             </Col>
                             <Col>
-                                <ConnectWalletButton
-                                    selectedAccount={selectedAccount}
-                                    setSelectedAccount={setSelectedAccount}
-                                />
+                                <ConnectWalletButton />
                             </Col>
                         </Row>
                     </Col>
                 </Row>
             </Header>
             <Content style={{ marginTop: 60 }}>
-                {React.cloneElement(children, { selectedAccount })}
+                {children}
             </Content>
             <Footer
                 style={{

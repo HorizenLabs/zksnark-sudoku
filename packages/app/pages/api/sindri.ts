@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import sindri from 'sindri';
+import { SindriClient } from 'sindri';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { packedPuzzle, solution } = req.body;
@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         console.info("Serialized Proof Input:", proofInput);
 
-        const sindriClient = sindri.create({ apiKey: process.env.SINDRI_API_KEY });
+        const sindriClient = new SindriClient({ apiKey: process.env.SINDRI_API_KEY });
         console.info("Sindri client created");
 
         const circuitIdentifier = 'zksnarks-sudoku-zkverify:latest';

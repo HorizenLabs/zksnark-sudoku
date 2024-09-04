@@ -5,6 +5,7 @@ import KeyboardView from './KeyboardView';
 import ProofView from './ProofView';
 import PuzzleView from './PuzzleView';
 import { useSindri } from '../hooks/useSindri';
+import * as snarkjs from 'snarkjs';
 
 const PlayPannel: React.FC = () => {
   const [puzzle, setPuzzle] = useState<number[]>(Array(81).fill(0));
@@ -29,8 +30,8 @@ const PlayPannel: React.FC = () => {
     if (sindriProof) {
       setProof(sindriProof);
       messageApi.success(
-          'Proof generated using Sindri. You can now show that you have solved this puzzle without sharing the solution.',
-          5
+        'Proof generated using Sindri. You can now show that you have solved this puzzle without sharing the solution.',
+        5
       );
       setProofCalculating(false);
     }
@@ -96,17 +97,17 @@ const PlayPannel: React.FC = () => {
         };
 
         const { proof, publicSignals } = await snarkjs.groth16.fullProve(
-            input,
-            'sudoku.wasm',
-            'sudoku_1.zkey'
+          input,
+          'sudoku.wasm',
+          'sudoku_1.zkey'
         );
 
         const circuitOutputSignal = publicSignals[0];
         if (circuitOutputSignal === '1') {
           setProof(JSON.stringify(proof));
           messageApi.success(
-              'Proof generated using snarkjs. You can now show that you have solved this puzzle without sharing the solution.',
-              5
+            'Proof generated using snarkjs. You can now show that you have solved this puzzle without sharing the solution.',
+            5
           );
         } else {
           throw new Error("Your solution isn't correct. Please solve the puzzle correctly!");
@@ -114,8 +115,8 @@ const PlayPannel: React.FC = () => {
       }
     } catch (error) {
       messageApi.error(
-          error instanceof Error ? error.message : "An unknown error occurred.",
-          5
+        error instanceof Error ? error.message : "An unknown error occurred.",
+        5
       );
     } finally {
       setProofCalculating(false);
@@ -137,68 +138,68 @@ const PlayPannel: React.FC = () => {
   };
 
   return (
-      <>
-        {contextHolder}
-        <Row justify="center">
-          <Col>
-            <Typography.Title level={3}>PLAY</Typography.Title>
-          </Col>
-        </Row>
-        <Spin spinning={proofCalculating || proofGenerating} tip="Proof generating..." size="large">
-          <Card title="Puzzle">
-            <Row>
-              <Col span={20}>
-                <PuzzleView
-                    puzzle={puzzle}
-                    solution={solution}
-                    selectedCellIndex={selectedCellIndex}
-                    onCellClick={onCellClick}
-                />
-              </Col>
-              <Col span={4}>
-                <KeyboardView onButtonClick={onKeyButtonClick} />
-              </Col>
-            </Row>
-            <Row gutter={20} justify="center" style={{ marginTop: 10 }}>
-              <Col>
-                <Button type="primary" onClick={onNewPuzzle}>
-                  New Puzzle
-                </Button>
-              </Col>
-              <Col>
-                <Button type="primary" onClick={onSolvePuzzle}>
-                  Solve Puzzle
-                </Button>
-              </Col>
-              <Col>
-                <Button type="primary" onClick={onEraseSolution}>
-                  Erase Solution
-                </Button>
-              </Col>
-              <Col>
-                <Button type="primary" onClick={onSavePuzzle}>
-                  Save Puzzle
-                </Button>
-              </Col>
-            </Row>
-          </Card>
-          <Card title="Proof" style={{ marginTop: 10 }}>
-            <ProofView proof={proof} disabled={true} />
-            <Row gutter={20} justify="center" style={{ marginTop: 10 }}>
-              <Col>
-                <Button type="primary" onClick={onGenerateProof}>
-                  Generate Proof
-                </Button>
-              </Col>
-              <Col>
-                <Button type="primary" onClick={onSaveProof}>
-                  Save Proof
-                </Button>
-              </Col>
-            </Row>
-          </Card>
-        </Spin>
-      </>
+    <>
+      {contextHolder}
+      <Row justify="center">
+        <Col>
+          <Typography.Title level={3}>PLAY</Typography.Title>
+        </Col>
+      </Row>
+      <Spin spinning={proofCalculating || proofGenerating} tip="Proof generating..." size="large">
+        <Card title="Puzzle">
+          <Row>
+            <Col span={20}>
+              <PuzzleView
+                puzzle={puzzle}
+                solution={solution}
+                selectedCellIndex={selectedCellIndex}
+                onCellClick={onCellClick}
+              />
+            </Col>
+            <Col span={4}>
+              <KeyboardView onButtonClick={onKeyButtonClick} />
+            </Col>
+          </Row>
+          <Row gutter={20} justify="center" style={{ marginTop: 10 }}>
+            <Col>
+              <Button type="primary" onClick={onNewPuzzle}>
+                New Puzzle
+              </Button>
+            </Col>
+            <Col>
+              <Button type="primary" onClick={onSolvePuzzle}>
+                Solve Puzzle
+              </Button>
+            </Col>
+            <Col>
+              <Button type="primary" onClick={onEraseSolution}>
+                Erase Solution
+              </Button>
+            </Col>
+            <Col>
+              <Button type="primary" onClick={onSavePuzzle}>
+                Save Puzzle
+              </Button>
+            </Col>
+          </Row>
+        </Card>
+        <Card title="Proof" style={{ marginTop: 10 }}>
+          <ProofView proof={proof} disabled={true} />
+          <Row gutter={20} justify="center" style={{ marginTop: 10 }}>
+            <Col>
+              <Button type="primary" onClick={onGenerateProof}>
+                Generate Proof
+              </Button>
+            </Col>
+            <Col>
+              <Button type="primary" onClick={onSaveProof}>
+                Save Proof
+              </Button>
+            </Col>
+          </Row>
+        </Card>
+      </Spin>
+    </>
   );
 };
 
