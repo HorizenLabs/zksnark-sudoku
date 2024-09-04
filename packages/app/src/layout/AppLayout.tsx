@@ -1,5 +1,5 @@
 import { purple } from '@ant-design/colors';
-import { GithubOutlined } from '@ant-design/icons';
+import dynamic from 'next/dynamic';
 import { Col, Layout, Row } from 'antd';
 import { Content, Footer, Header } from 'antd/lib/layout/layout';
 import Image from 'next/image';
@@ -10,6 +10,8 @@ import {
 } from '../Constants';
 import logo from '../images/sudoku.png';
 import ConnectWalletButton from '../components/ConnectWalletButton';
+
+const GithubOutlined = dynamic(() => import('@ant-design/icons').then(mod => mod.GithubOutlined), { ssr: false });
 
 export default function AppLayout({ children }: { children: ReactNode }) {
     return (

@@ -30,3 +30,9 @@ yarn-debug.log*
 yarn-error.log*
 
 .idea
+
+# wrangler
+packages/app/.wrangler
+
+# vscode
+.vscode

@@ -6,7 +6,9 @@
     "compile-circuit": "npm run compile --workspace circuit",
     "test-circuit": "npm run test --workspace circuit",
     "dev": "npm run dev --workspace app",
-    "build": "npm run build --workspace app"
+    "build": "npm run build --workspace app",
+    "pages:build": "npm run pages:build --workspace app",
+    "preview": "npm run preview --workspace app"
   },
   "repository": {
     "type": "git",

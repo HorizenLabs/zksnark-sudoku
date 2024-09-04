@@ -42,3 +42,11 @@ Now it has the following features.
    If you solve a puzzle, you can generate its proof.
 3. Verify.
    You can make sure others that you have solved a puzzle without sharing your solution.
+
+## 🚀 Deployed in Cloudflare Pages
+
+To test the application locally, replication the cloudflare pages behavior:
+
+```bash
+npm run preview
+```
