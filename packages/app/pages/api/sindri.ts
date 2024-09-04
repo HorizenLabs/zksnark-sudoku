@@ -1,8 +1,6 @@
-import type { NextApiRequest } from 'next';
-
 export const runtime = 'edge';
 
-export default async function handler(req: NextApiRequest) {
+export default async function handler(req: any) {
   console.info('Received Request:', JSON.stringify(req, null, 2));
   console.info('Received Request Body:', JSON.stringify(req.body, null, 2));
 
