@@ -95,7 +95,7 @@ const PlayPannel: React.FC = () => {
           solution: solution,
         };
 
-        // @ts-expect-error Global snarkjs usage
+        const snarkjs = await import('snarkjs');
         const { proof, publicSignals } = await snarkjs.groth16.fullProve(
           input,
           'sudoku.wasm',
