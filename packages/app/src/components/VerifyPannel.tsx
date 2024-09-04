@@ -3,7 +3,7 @@ import { Button, Card, Col, message, Row, Spin } from 'antd';
 import ProofView from './ProofView';
 import PuzzleView from './PuzzleView';
 import { useZkVerify } from '../hooks/useZkVerify';
-import { useAccount } from "../../context/AccountContext";
+import { useAccount } from "../contexts/AccountContext";
 import { VerifyTransactionInfo } from "zkverifyjs";
 
 export default function VerifyPannel() {

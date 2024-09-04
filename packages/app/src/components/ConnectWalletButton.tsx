@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
 import { Button, message } from 'antd';
-import { useAccount } from '../../context/AccountContext';
+import { useAccount } from '../contexts/AccountContext';
 
 const WalletSelect = dynamic(() => import('@talismn/connect-components').then((mod) => mod.WalletSelect), {
     ssr: false,
