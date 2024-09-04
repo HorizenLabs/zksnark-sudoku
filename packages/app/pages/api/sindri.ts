@@ -24,6 +24,12 @@ export default async function handler(req: any) {
 
     console.info('Serialized Proof Input:', proofInput);
 
+    // The proof_input must be sent as a JSON string within the request body
+    const requestBody = {
+      proof_input: JSON.stringify({ packedPuzzle, solution }),
+      perform_verify: true,
+    };
+
     const circuitIdentifier = 'zksnarks-sudoku-zkverify:latest';
     const sindriApiUrl = `https://sindri.app/api/v1/circuit/${circuitIdentifier}/prove`;
 
@@ -34,11 +40,14 @@ export default async function handler(req: any) {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${process.env.SINDRI_API_KEY}`,
       },
-      body: proofInput,
+      body: JSON.stringify(requestBody),
     });
 
     if (!response.ok) {
-      throw new Error(`Sindri API responded with status ${response.status}`);
+      const errorDetails = await response.text(); // Log response body for more details
+      throw new Error(
+        `Sindri API responded with status ${response.status}: ${errorDetails}`
+      );
     }
 
     const proofResult = await response.json();
