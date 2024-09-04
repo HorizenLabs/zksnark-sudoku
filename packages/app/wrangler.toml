@@ -2,8 +2,3 @@ name = "zksnark-sudoku"
 compatibility_date = "2024-07-29"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = ".vercel/output/static"
-
-# Define the build commands
-[build]
-command = "npm install --legacy-peer-deps && npx @cloudflare/next-on-pages@1.13.2"
-cwd = "packages/app"  # App root directory
