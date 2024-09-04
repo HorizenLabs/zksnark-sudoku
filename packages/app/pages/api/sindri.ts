@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import sindri from 'sindri';
 
-export const runtime = 'experimental-edge';
+export const runtime = 'edge';
 
 export default async function handler(
   req: NextApiRequest,
