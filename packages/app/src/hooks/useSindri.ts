@@ -26,7 +26,7 @@ export function useSindri() {
             }
 
             const data = await response.json();
-            setProof(data.proof);
+            setProof(JSON.stringify(data.proof));
 
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An unknown error occurred.');
