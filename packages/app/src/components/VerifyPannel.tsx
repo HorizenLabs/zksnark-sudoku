@@ -1,39 +1,42 @@
-import { Button, Card, Col, message, Row, Spin, Typography } from 'antd';
-import { ChangeEvent, useRef, useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Button, Card, Col, message, Row, Spin } from 'antd';
 import ProofView from './ProofView';
 import PuzzleView from './PuzzleView';
+import { useZkVerify } from '../hooks/useZkVerify';
+import { useAccount } from "../contexts/AccountContext";
+import { VerifyTransactionInfo } from "zkverifyjs";
 
 export default function VerifyPannel() {
+  const { selectedAccount } = useAccount();
   const [puzzle, setPuzzle] = useState<number[]>(Array(81).fill(0));
   const [proof, setProof] = useState<string>('');
-  const [verified, setVerified] = useState<boolean>(false);
+  const puzzleFile = useRef<HTMLInputElement | null>(null);
+  const proofFile = useRef<HTMLInputElement | null>(null);
+  const { verifying, verified, error, onVerifyProof } = useZkVerify(selectedAccount);
 
-  const puzzleFile = useRef(null);
-  const proofFile = useRef(null);
-  const [verifying, setVerifying] = useState<boolean>(false);
+  const useSindriFlag = process.env.NEXT_PUBLIC_USE_SINDRI === 'true';
 
-  const [messageApi, contextHolder] = message.useMessage();
+  useEffect(() => {
+    if (error) {
+      message.error(error);
+    }
+  }, [error]);
 
-  const isValidPuzzleData = (puzzleData: number[]): boolean => {
-    return puzzleData.length == 81;
-  };
-
-  const isValidProofData = (proofData: {
-    pi_a: [];
-    pi_b: [];
-    pi_c: [];
-    protocol: string;
-    curve: string;
-  }): boolean => {
-    return proofData.protocol === 'groth16' && proofData.curve === 'bn128';
-  };
+  useEffect(() => {
+    if (verified) {
+      message.success('Proof verified successfully!');
+    }
+  }, [verified]);
 
   const onLoadPuzzle = () => {
     if (puzzleFile.current != null) puzzleFile.current.click();
-    setVerified(false);
   };
 
-  const onFileSelected = (event: ChangeEvent<HTMLInputElement>) => {
+  const onLoadProof = () => {
+    if (proofFile.current != null) proofFile.current.click();
+  };
+
+  const onFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.stopPropagation();
     event.preventDefault();
     if (event.target.files != null && event.target.files.length > 0) {
@@ -43,21 +46,17 @@ export default function VerifyPannel() {
         if (e.target != null) {
           try {
             const fileContent = JSON.parse(e.target.result as string);
-            if (event.target == puzzleFile.current) {
-              if (isValidPuzzleData(fileContent)) {
+            if (event.target === puzzleFile.current) {
+              if (fileContent.length === 81) {
                 setPuzzle(fileContent);
               } else {
-                messageApi.error('Selected file is not valid puzzle file!');
+                message.error('Selected file is not a valid puzzle file!');
               }
-            } else if (event.target == proofFile.current) {
-              if (isValidProofData(fileContent)) {
-                setProof(JSON.stringify(fileContent));
-              } else {
-                messageApi.error('Selected file is not valid proof file!');
-              }
+            } else if (event.target === proofFile.current) {
+              setProof(JSON.stringify(fileContent));
             }
           } catch (error) {
-            messageApi.error('You selected wrong file!');
+            message.error('You selected the wrong file!');
           }
         }
       };
@@ -65,63 +64,71 @@ export default function VerifyPannel() {
     }
   };
 
-  const onLoadProof = () => {
-    setVerified(false);
-    if (proofFile.current != null) proofFile.current.click();
+  const downloadTransactionInfo = (transactionInfo: VerifyTransactionInfo) => {
+    const blob = new Blob([JSON.stringify(transactionInfo, null, 2)], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `zkverify-${transactionInfo.attestationId}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
-  const onVerifyProof = async () => {
-    if (proof === '') {
-      messageApi.error('Please select your proof file!');
-      return;
-    }
+  const handleVerifyClick = async () => {
+    let vkey;
+    let proofData = proof;
 
-    const vkey = await fetch('sudoku_verify_key.json').then((res) => {
-      return res.json();
-    });
-
-    setVerifying(true);
-
-    //
-    // This first "1" is the circuit's output signal, which means the solution is correct.
-    //
-    const publicSignals = ['1', ...puzzle];
-    const proofData = JSON.parse(proof);
-    const res = await snarkjs.groth16.verify(vkey, publicSignals, proofData);
-
-    setVerifying(false);
-
-    if (res) {
-      messageApi.success('Your proof is verified. You solved the puzzle.', 5);
+    if (useSindriFlag && proof) {
+      const parsedProof = JSON.parse(proof);
+      proofData = JSON.stringify(parsedProof.proof);
+      vkey = parsedProof.verification_key;
     } else {
-      messageApi.error("Your proof isn't correct.", 5);
+      vkey = await fetch('sudoku_verify_key.json').then(res => res.json());
     }
-    setVerified(res);
+
+    const transactionInfo = await onVerifyProof(proofData, puzzle, vkey);
+    if (transactionInfo) {
+      message.success(`Verified Successfully on zkVerify - AttestationId: ${transactionInfo.attestationId}`);
+      downloadTransactionInfo(transactionInfo);
+    }
   };
 
   return (
     <>
-      {contextHolder}
       <input
         type="file"
-        id="puzzleFile"
         ref={puzzleFile}
         style={{ display: 'none' }}
         onChange={onFileSelected}
       />
       <input
         type="file"
-        id="proofFile"
         ref={proofFile}
         style={{ display: 'none' }}
         onChange={onFileSelected}
       />
       <Row justify="center">
         <Col>
-          <Typography.Title level={3}>VERIFY</Typography.Title>
+          <a href="https://zkverify.io" target="_blank" rel="noopener noreferrer">
+            <img
+              src="/zk_Verify_logo_full_white.png"
+              alt="Logo"
+              style={{ height: '50px', verticalAlign: 'middle' }}
+            />
+          </a>
         </Col>
       </Row>
-      <Spin spinning={verifying} tip="Proof verifying..." size="large">
+      <Spin
+        spinning={verifying}
+        tip={
+          <img
+            src="/zk_Verify_logo_full_white.png"
+            alt="Verifying..."
+            style={{ height: '30px', verticalAlign: 'middle' }}
+          />
+        }
+        size="large"
+      >
         <Card title="Puzzle">
           <PuzzleView puzzle={puzzle} />
           <Row gutter={20} justify="center" style={{ marginTop: 10 }}>
@@ -144,7 +151,7 @@ export default function VerifyPannel() {
               </Button>
             </Col>
             <Col>
-              <Button type="primary" onClick={onVerifyProof}>
+              <Button type="primary" onClick={handleVerifyClick}>
                 Verify Proof
               </Button>
             </Col>

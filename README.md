@@ -1,8 +1,8 @@
 ![🏆](https://github.com/web3-master/zksnark-sudoku/blob/master/screen-capture.gif?raw=true)
 
-# 🏆🏆🏆 zkSNARK Sudoku 🏆🏆🏆
+# 🏆🏆🏆 zkSNARK Sudoku x zkVerify 🏆🏆🏆
 
-Sudoku verifier using zkSNARK.
+Sudoku verifier using zkSNARK and zkVerify for proof verification.
 
 ## 📺 LIVE ON
 
@@ -17,6 +17,9 @@ https://zksnark-sudoku.surge.sh/
 > Circom: zksnark circuit compilation toolkit.
 
 > snarkjs: zksnark library.
+
+> zkVerifyJS: Proof verification on zkVerify 
+
 
 ### 📝 Description
 
@@ -42,7 +45,17 @@ Now it has the following features.
 
 ## 🚀 Deployed in Cloudflare Pages
 
-To test the application locally, replication the cloudflare pages behavior:
+
+> We have a `wrangler.toml` file that contains the Cloudflare deployment configuration.
+> However, the build command is configured directly in the Cloudflare console.
+
+It uses the following command to set up the environment and build the application:
+
+```bash
+npm install --legacy-peer-deps && cd packages/app && npx @cloudflare/next-on-pages@1.13.2
+```
+
+To test the application locally, replicating the cloudflare pages behavior:
 
 ```bash
 npm run preview

@@ -4,19 +4,22 @@ include "utils.circom";
 include "circomlib/gates.circom";
 
 template sudoku() {
-    signal input puzzle[81];
+    signal input packedPuzzle[6];
     signal input solution[81];
     signal output solved;
+
+    component unpacker = UnpackDigits(6, 16);
+    unpacker.packedPuzzle <== packedPuzzle;
 
     component puzzleValidator = IsValidPuzzle();
     component solutionValidator = IsValidSolution();
     component solutionPuzzleMatcher = IsValidSolutionOfPuzzle();
 
     for (var i = 0; i < 81; i++) {
-        puzzleValidator.puzzle[i] <== puzzle[i];
+        puzzleValidator.puzzle[i] <== unpacker.digits[i];
         solutionValidator.solution[i] <== solution[i];
         solutionPuzzleMatcher.solution[i] <== solution[i];
-        solutionPuzzleMatcher.puzzle[i] <== puzzle[i];
+        solutionPuzzleMatcher.puzzle[i] <== unpacker.digits[i];
     }
 
     component multiAnd = MultiAND(3);
@@ -27,4 +30,4 @@ template sudoku() {
     solved <== multiAnd.out;
 }
 
-component main {public [puzzle]} = sudoku();
+component main {public [packedPuzzle]} = sudoku();

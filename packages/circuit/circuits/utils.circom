@@ -2,6 +2,7 @@ pragma circom 2.0.8;
 
 include "circomlib/comparators.circom";
 include "circomlib/gates.circom";
+include "circomlib/poseidon.circom";
 
 /**
  * Check if the puzzle is valid.
@@ -326,3 +327,27 @@ template GetNumberGroupForBox(index) {
         numberGroup[i] <== board[position];
     }
 }
+
+template UnpackDigits(numPacked, digitsPerInt) {
+    signal input packedPuzzle[numPacked];
+    signal output digits[numPacked * digitsPerInt];
+
+    var index = 0;
+
+    for (var i = 0; i < numPacked; i++) {
+        var packedValue = packedPuzzle[i];
+
+        for (var j = 0; j < digitsPerInt; j++) {
+            var digit = packedValue - (packedValue / 16) * 16; // Extract 4 bits (a single digit)
+            digits[index] <== digit;
+            packedValue = packedValue / 16; // Shift right to get to the next digit
+            index++;
+        }
+    }
+}
+
+
+
+
+
+

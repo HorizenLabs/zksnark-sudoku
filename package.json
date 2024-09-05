@@ -28,5 +28,8 @@
   "homepage": "https://github.com/web3-master/zksnark-sudoku#readme",
   "workspaces": [
     "./packages/*"
-  ]
+  ],
+  "dependencies": {
+    "zkverifyjs": "file:packages/zkverifyjs/zkverifyjs-1.0.0.tgz"
+  }
 }

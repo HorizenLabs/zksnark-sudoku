@@ -105,3 +105,7 @@ a {
     color-scheme: dark;
   }
 }
+
+.ant-spin-dot-item {
+  background-color: #26DB8D!important;
+}

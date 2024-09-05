@@ -22,7 +22,7 @@ build
 
 # misc
 .DS_Store
-.env*
+.env
 
 # debug
 npm-debug.log*
@@ -32,6 +32,7 @@ yarn-error.log*
 .idea
 
 # wrangler
+.wrangler
 packages/app/.wrangler
 
 # vscode

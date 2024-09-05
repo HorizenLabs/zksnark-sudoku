@@ -1,0 +1,7 @@
+name = "zksnark-sudoku"
+compatibility_date = "2024-07-29"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "./packages/app/.vercel/output/static"
+
+[vars]
+NEXT_PUBLIC_USE_SINDRI = "true"

@@ -6,6 +6,7 @@ import PlayPannel from "../src/components/PlayPannel";
 import VerifyPannel from "../src/components/VerifyPannel";
 import { APP_DESCRIPTION, APP_NAME } from "../src/Constants";
 import AppLayout from "../src/layout/AppLayout";
+import { AccountProvider } from "../src/contexts/AccountContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,16 +20,18 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Script src="/snarkjs.min.js" />
-      <AppLayout>
-        <Row style={{ padding: 50 }} gutter={50} justify="center">
-          <Col span={10}>
-            <PlayPannel />
-          </Col>
-          <Col span={10}>
-            <VerifyPannel />
-          </Col>
-        </Row>
-      </AppLayout>
+      <AccountProvider>
+        <AppLayout>
+          <Row style={{ padding: 50 }} gutter={50} justify="center">
+            <Col span={10}>
+              <PlayPannel />
+            </Col>
+            <Col span={10}>
+              <VerifyPannel />
+            </Col>
+          </Row>
+        </AppLayout>
+      </AccountProvider>
     </>
   );
 }
