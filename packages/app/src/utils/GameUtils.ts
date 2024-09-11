@@ -27,7 +27,7 @@ export function packDigits(puzzleArray: string | any[]) {
     current |= BigInt(puzzleArray[i]) << BigInt(shift);
     shift += 4;
 
-    if (shift >= 64) {
+    if (shift >= 41 * 4) {
       packed.push(current);
       current = BigInt(0);
       shift = 0;

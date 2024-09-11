@@ -4,11 +4,11 @@ include "utils.circom";
 include "circomlib/gates.circom";
 
 template sudoku() {
-    signal input packedPuzzle[6];
+    signal input packedPuzzle[2];
     signal input solution[81];
     signal output solved;
 
-    component unpacker = UnpackDigits(6, 16);
+    component unpacker = UnpackDigits(2, 41);
     unpacker.packedPuzzle <== packedPuzzle;
 
     component puzzleValidator = IsValidPuzzle();
