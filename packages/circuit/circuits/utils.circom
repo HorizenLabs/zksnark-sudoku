@@ -3,6 +3,7 @@ pragma circom 2.0.8;
 include "circomlib/comparators.circom";
 include "circomlib/gates.circom";
 include "circomlib/poseidon.circom";
+include "circomlib/bitify.circom";
 
 /**
  * Check if the puzzle is valid.
@@ -328,26 +329,28 @@ template GetNumberGroupForBox(index) {
     }
 }
 
-template UnpackDigits(numPacked, digitsPerInt) {
-    signal input packedPuzzle[numPacked];
-    signal output digits[numPacked * digitsPerInt];
+template UnpackDigits(numPacks, digitsPerPack) {
+    var numDigits = digitsPerPack * numPacks;
+    var bitsPerDigit = 4;
+    var bitsPerPack = bitsPerDigit * digitsPerPack;
 
-    var index = 0;
+    signal input packedPuzzle[numPacks];
+    signal output digits[numDigits];
 
-    for (var i = 0; i < numPacked; i++) {
-        var packedValue = packedPuzzle[i];
+    component num2bits[numPacks];
+    component bits2num[numDigits];
 
-        for (var j = 0; j < digitsPerInt; j++) {
-            var digit = packedValue - (packedValue / 16) * 16; // Extract 4 bits (a single digit)
-            digits[index] <== digit;
-            packedValue = packedValue / 16; // Shift right to get to the next digit
-            index++;
+    for (var pack = 0; pack < numPacks; pack++) {
+        num2bits[pack] = Num2Bits(bitsPerPack);
+        num2bits[pack].in <== packedPuzzle[pack];
+        for (var digit = 0; digit < digitsPerPack; digit++) {
+            var currentDigit = pack * digitsPerPack + digit;
+            bits2num[currentDigit] = Bits2Num(bitsPerDigit);
+            for (var bit = 0; bit < bitsPerDigit; bit++) {
+                var currentBit = digit * bitsPerDigit + bit;
+                bits2num[currentDigit].in[bit] <== num2bits[pack].out[currentBit];
+            }
+            digits[currentDigit] <== bits2num[currentDigit].out;
         }
     }
 }
-
-
-
-
-
-
