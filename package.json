@@ -30,6 +30,6 @@
     "./packages/*"
   ],
   "dependencies": {
-    "zkverifyjs": "^1.0.0"
+    "zkverifyjs": "0.2.0"
   }
 }
