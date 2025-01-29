@@ -52,7 +52,7 @@ export function useZkVerify() {
 
       const { events, transactionResult } = await session
         .verify()
-        .groth16(Library.snarkjs, CurveType.bn254)
+        .groth16(Library.snarkjs, CurveType.bn128)
         .execute({
           proofData: {
             proof: proofData,

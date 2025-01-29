@@ -69,11 +69,7 @@ const PlayPannel: React.FC = () => {
   };
 
   const onSavePuzzle = () => {
-    const savedPuzzle = puzzle.map((value, index) =>
-        value === 0 ? solution[index] : value
-    );
-
-    const puzzleData = JSON.stringify(savedPuzzle);
+    const puzzleData = JSON.stringify(puzzle);
     const blob = new Blob([puzzleData], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
