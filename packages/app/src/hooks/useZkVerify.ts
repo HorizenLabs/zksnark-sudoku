@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { packDigits } from '../utils/GameUtils';
+import { useAccount } from "../contexts/AccountContext";
+import { CurveType, Library } from "zkverifyjs";
 
-export function useZkVerify(selectedAccount: string | null) {
+export function useZkVerify() {
+  const { selectedAccount, selectedWalletSource } = useAccount();
   const [verifying, setVerifying] = useState(false);
   const [verified, setVerified] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,16 +42,25 @@ export function useZkVerify(selectedAccount: string | null) {
 
       let session;
       try {
-        session = await zkVerifySession.start().Testnet().withWallet();
+        session = await zkVerifySession.start().Testnet().withWallet({
+          source: selectedWalletSource!,
+          accountAddress: selectedAccount!
+        });
       } catch (error: unknown) {
         throw new Error(`Connection failed: ${(error as Error).message}`);
       }
 
       const { events, transactionResult } = await session
         .verify()
-        .groth16()
-        .execute(proofData, publicSignals, vk);
-
+        .groth16(Library.snarkjs, CurveType.bn254)
+        .execute({
+          proofData: {
+            proof: proofData,
+            publicSignals: publicSignals,
+            vk: vk
+          }
+        });
+      
       events.on('ErrorEvent', (eventData) => {
         console.error(JSON.stringify(eventData));
       });

@@ -8,7 +8,7 @@ const WalletSelect = dynamic(() => import('@talismn/connect-components').then((m
 });
 
 const ConnectWalletButton: React.FC = () => {
-    const { selectedAccount, setSelectedAccount } = useAccount();
+    const { selectedAccount, setSelectedAccount, selectedWalletSource, setSelectedWalletSource } = useAccount();
     const [isWalletSelectOpen, setIsWalletSelectOpen] = useState<boolean>(false);
 
     const handleWalletConnectOpen = () => {
@@ -21,6 +21,8 @@ const ConnectWalletButton: React.FC = () => {
 
     const handleWalletSelected = (wallet: any) => {
         console.log('Wallet selected:', wallet);
+        setSelectedWalletSource(wallet.extensionName);
+        message.success(`Wallet selected: ${wallet.title}`);
     };
 
     const handleUpdatedAccounts = (accounts: any[] | undefined) => {
@@ -61,7 +63,9 @@ const ConnectWalletButton: React.FC = () => {
                 className={selectedAccount ? 'connectedButton' : 'connectButton'}
                 onClick={handleWalletConnectOpen}
             >
-                {selectedAccount ? `Connected: ${selectedAccount.slice(0, 6)}...${selectedAccount.slice(-4)}` : 'Connect Wallet'}
+                {selectedAccount
+                    ? `Connected: ${selectedAccount.slice(0, 6)}...${selectedAccount.slice(-4)}`
+                    : 'Connect Wallet'}
             </Button>
 
             {isWalletSelectOpen && (

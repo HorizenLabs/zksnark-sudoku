@@ -3,16 +3,14 @@ import { Button, Card, Col, message, Row, Spin } from 'antd';
 import ProofView from './ProofView';
 import PuzzleView from './PuzzleView';
 import { useZkVerify } from '../hooks/useZkVerify';
-import { useAccount } from "../contexts/AccountContext";
 import { VerifyTransactionInfo } from "zkverifyjs";
 
 export default function VerifyPannel() {
-  const { selectedAccount } = useAccount();
   const [puzzle, setPuzzle] = useState<number[]>(Array(81).fill(0));
   const [proof, setProof] = useState<string>('');
   const puzzleFile = useRef<HTMLInputElement | null>(null);
   const proofFile = useRef<HTMLInputElement | null>(null);
-  const { verifying, verified, error, onVerifyProof } = useZkVerify(selectedAccount);
+  const { verifying, verified, error, onVerifyProof } = useZkVerify();
 
   const useSindriFlag = process.env.NEXT_PUBLIC_USE_SINDRI === 'true';
 
