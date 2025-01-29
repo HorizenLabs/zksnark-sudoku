@@ -8,6 +8,7 @@ import { useSindri } from '../hooks/useSindri';
 
 const PlayPannel: React.FC = () => {
   const [puzzle, setPuzzle] = useState<number[]>(Array(81).fill(0));
+  const [puzzleGenerated, setPuzzleGenerated] = useState<boolean>(false);
   const [solution, setSolution] = useState<number[]>(Array(81).fill(0));
   const [selectedCellIndex, setSelectedCellIndex] = useState<number>(-1);
 
@@ -54,6 +55,7 @@ const PlayPannel: React.FC = () => {
     setPuzzle(newPuzzle);
     setSolution(Array(81).fill(0));
     setSelectedCellIndex(-1);
+    setPuzzleGenerated(true);
   };
 
   const onSolvePuzzle = () => {
@@ -167,7 +169,7 @@ const PlayPannel: React.FC = () => {
               </Button>
             </Col>
             <Col>
-              <Button type="primary" onClick={onSolvePuzzle}>
+              <Button type="primary" onClick={onSolvePuzzle} disabled={!puzzleGenerated}>
                 Solve Puzzle
               </Button>
             </Col>
