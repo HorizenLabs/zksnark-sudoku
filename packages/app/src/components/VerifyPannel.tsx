@@ -66,7 +66,7 @@ export default function VerifyPannel() {
     const blob = new Blob([JSON.stringify(transactionInfo, null, 2)], { type: 'application/json' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `zkverify-${transactionInfo.attestationId}.json`;
+    link.download = `zkverify-${transactionInfo.txHash}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
