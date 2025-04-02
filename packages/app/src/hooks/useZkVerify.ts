@@ -73,7 +73,7 @@ export function useZkVerify() {
         throw new Error(`Transaction failed: ${(error as Error).message}`);
       }
 
-      if (transactionInfo && transactionInfo.statement && transactionInfo.aggregationId >= 0) {
+      if (transactionInfo && transactionInfo.statement && typeof transactionInfo.aggregationId === 'number' && transactionInfo.aggregationId >= 0) {
         setVerified(true);
         return transactionInfo;
       } else {
