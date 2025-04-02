@@ -86,7 +86,7 @@ export default function VerifyPannel() {
 
     const transactionInfo = await onVerifyProof(proofData, puzzle, vkey);
     if (transactionInfo) {
-      message.success(`Verified Successfully on zkVerify - AttestationId: ${transactionInfo.attestationId}`);
+      message.success(`Verified Successfully on zkVerify - DomainId: ${transactionInfo.domainId} - AggregationId: ${transactionInfo.aggregationId}`) ;
       downloadTransactionInfo(transactionInfo);
     }
   };
