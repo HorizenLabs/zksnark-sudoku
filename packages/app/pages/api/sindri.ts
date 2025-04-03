@@ -1,28 +1,39 @@
 export const runtime = 'edge';
-
-const SINDRI_API_KEY = process.env.SINDRI_API_KEY
-console.log('Starting API handler...');
-console.log('SINDRI_API_KEY:', SINDRI_API_KEY?.slice(0, 8) || 'Not Set');
+import { NextRequest, NextResponse } from 'next/server';
 
 const CIRCUIT_IDENTIFIER = 'zksnarks-sudoku-zkverify:latest';
 const MAX_POLLING_ATTEMPTS = 10;
-const POLLING_INTERVAL = 5000; // 5 seconds
+const POLLING_INTERVAL = 5000;
 
-export default async function handler(req: Request) {
-  console.log('Incoming Request:', req.method, req.url);
+export default async function handler(req: NextRequest): Promise<Response> {
+  let logs = '';
+
+  logs += 'Starting API handler...\n';
+
+  const SINDRI_API_KEY = process.env.SINDRI_API_KEY;
+
+  logs += `SINDRI_API_KEY (first 8 chars): ${SINDRI_API_KEY?.slice(0, 8) || 'Not Set'}\n`;
 
   try {
-    const bodyText = await req.text();
-    console.log('Request Body Text:', bodyText);
+    logs += `Incoming Request: ${req.method} ${req.url}\n`;
 
-    const { packedPuzzle, solution } = JSON.parse(bodyText);
-    console.log('Parsed Request Body:', { packedPuzzle, solution });
+    const bodyText = await req.text();
+    logs += `Request Body Text: ${bodyText}\n`;
+
+    let packedPuzzle, solution;
+
+    try {
+      ({ packedPuzzle, solution } = JSON.parse(bodyText));
+    } catch (error) {
+      logs += `Failed to parse JSON: ${error instanceof Error ? error.message : 'Unknown error'}\n`;
+      return new NextResponse(JSON.stringify({ error: 'Invalid JSON', logs }), { status: 400 })
+    }
 
     if (!packedPuzzle || !solution) {
-      console.error('Invalid request body:', { packedPuzzle, solution });
-      return new Response(
-          JSON.stringify({ error: 'Packed puzzle and solution are required' }),
-          { status: 400, headers: { 'Content-Type': 'application/json' } }
+      logs += 'Invalid request body: Packed puzzle or solution missing\n';
+      return new NextResponse(
+          JSON.stringify({ error: 'Packed puzzle and solution are required', logs }),
+          { status: 400 }
       );
     }
 
@@ -31,7 +42,7 @@ export default async function handler(req: Request) {
       perform_verify: true,
     };
 
-    console.log('Sending request to Sindri API...');
+    logs += 'Sending request to Sindri API...\n';
 
     const proveResponse = await fetch(
         `https://sindri.app/api/v1/circuit/${CIRCUIT_IDENTIFIER}/prove`,
@@ -45,70 +56,59 @@ export default async function handler(req: Request) {
         }
     );
 
-    console.log('Sindri Response Status:', proveResponse.status);
+    logs += `Sindri Response Status: ${proveResponse.status}\n`;
 
     const responseText = await proveResponse.text();
-    console.log('Sindri Response Body:', responseText);
+    logs += `Sindri Response Text: ${responseText}\n`;
 
     if (!proveResponse.ok) {
-      throw new Error(
-          `Sindri API responded with status ${proveResponse.status}: ${responseText}`
-      );
+      return new NextResponse(JSON.stringify({ error: `Sindri API Error: ${responseText}`, logs }), { status: 500 })
     }
 
     const responseBody = JSON.parse(responseText);
     const { proof_id: proofId } = responseBody;
 
-    console.log('Proof ID:', proofId);
+    logs += `Proof ID: ${proofId}\n`;
 
-    const finalProof = await pollForProof(proofId);
+    const finalProof = await pollForProof(proofId, logs);
 
-    console.log('Final Proof:', finalProof);
+    logs += `Final Proof: ${JSON.stringify(finalProof)}\n`;
 
-    return new Response(JSON.stringify({ proof: finalProof }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return new NextResponse(JSON.stringify({ proof: finalProof, logs }), { status: 200 });
+
   } catch (error) {
-    console.error('Error during proof generation:', error);
-    return new Response(
-        JSON.stringify({
-          error: error instanceof Error ? error.message : 'An unknown error occurred',
-        }),
-        {
-          status: 500,
-          headers: { 'Content-Type': 'application/json' },
-        }
-    );
+    logs += `Error during proof generation: ${error instanceof Error ? error.message : 'Unknown error'}\n`;
+    return new NextResponse(JSON.stringify({ error: error instanceof Error ? error.message : 'Internal Server Error', logs }), { status: 500 });
   }
 }
 
-async function pollForProof(proofId: string): Promise<any> {
+async function pollForProof(proofId: string, logs: string): Promise<any> {
   const proofDetailUrl = `https://sindri.app/api/v1/proof/${proofId}/detail`;
 
   for (let attempt = 0; attempt < MAX_POLLING_ATTEMPTS; attempt++) {
-    console.log(`Polling attempt ${attempt + 1} for proofId: ${proofId}`);
+    logs += `Polling attempt ${attempt + 1} for proofId: ${proofId}\n`;
 
     const response = await fetch(proofDetailUrl, {
       headers: {
-        Authorization: `Bearer ${SINDRI_API_KEY}`,
+        Authorization: `Bearer ${process.env.SINDRI_API_KEY}`,
       },
     });
 
     const proofDetailsText = await response.text();
-    console.log('Polling Response Body:', proofDetailsText);
+    logs += `Polling Response Text: ${proofDetailsText}\n`;
 
     if (!response.ok) {
+      logs += `Failed to fetch proof details: ${response.statusText}\n`;
       throw new Error(`Failed to fetch proof details: ${response.statusText}`);
     }
 
     const proofDetails = JSON.parse(proofDetailsText);
 
     if (proofDetails.status === 'Ready') {
-      console.log('Proof successfully generated:', proofDetails);
+      logs += `Proof successfully generated: ${JSON.stringify(proofDetails)}\n`;
       return proofDetails;
     } else if (proofDetails.status === 'Failed') {
-      console.error('Proof generation failed');
+      logs += 'Proof generation failed\n';
       throw new Error('Proof generation failed');
     }
 
