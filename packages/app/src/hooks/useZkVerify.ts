@@ -42,7 +42,7 @@ export function useZkVerify() {
 
       let session;
       try {
-        session = await zkVerifySession.start().Testnet().withWallet({
+        session = await zkVerifySession.start().Volta().withWallet({
           source: selectedWalletSource!,
           accountAddress: selectedAccount!
         });
@@ -58,7 +58,8 @@ export function useZkVerify() {
             proof: proofData,
             publicSignals: publicSignals,
             vk: vk
-          }
+          },
+          domainId: 0
         });
       
       events.on('ErrorEvent', (eventData) => {
@@ -72,7 +73,7 @@ export function useZkVerify() {
         throw new Error(`Transaction failed: ${(error as Error).message}`);
       }
 
-      if (transactionInfo && transactionInfo.attestationId) {
+      if (transactionInfo && transactionInfo.statement && typeof transactionInfo.aggregationId === 'number' && transactionInfo.aggregationId >= 0) {
         setVerified(true);
         return transactionInfo;
       } else {
