@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 const SINDRI_API_KEY = process.env.SINDRI_API_KEY
 console.log('Starting API handler...');
 console.log('SINDRI_API_KEY:', SINDRI_API_KEY?.slice(0, 8) || 'Not Set');
