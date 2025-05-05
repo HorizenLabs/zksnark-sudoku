@@ -10,12 +10,14 @@ import {
 } from '../Constants';
 import logo from '../images/sudoku.png';
 import ConnectWalletButton from '../components/ConnectWalletButton';
+import GoogleAnalyticsTag from '../utils/GoogleAnalyticsTag';
 
 const GithubOutlined = dynamic(() => import('@ant-design/icons').then(mod => mod.GithubOutlined), { ssr: false });
 
 export default function AppLayout({ children }: { children: ReactNode }) {
     return (
         <Layout style={{ minHeight: '100vh' }}>
+            <GoogleAnalyticsTag />
             <Header
                 style={{
                     position: 'fixed',
